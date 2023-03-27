@@ -20,7 +20,8 @@ def sample_xs_from_PTables(ptables_list):
 
 def Eigen_function_0D_CE(E0, tally, material, rng, 
                                                 ptables_list = None,
-                                                URR_Erange = None):
+                                                URR_Erange = None,
+                                                avg_URR = None):
 
     ### kills neutrons that exit lower energies
     if E0 < tally.Emin:
@@ -28,7 +29,14 @@ def Eigen_function_0D_CE(E0, tally, material, rng,
     
     ### pull cross sections at E0
     if ptables_list is None:
-        Sig_t, Sig_f, Sig_g, Sig_s = material.get_macro_cross_sections(E0)
+        if avg_URR is None:
+            Sig_t, Sig_f, Sig_g, Sig_s = material.get_macro_cross_sections(E0)
+        else:
+            assert URR_Erange is not None
+            if np.searchsorted(URR_Erange, E0) == 1:
+                Sig_t, Sig_g, Sig_s, Sig_f = avg_URR
+            else:
+                Sig_t, Sig_f, Sig_g, Sig_s = material.get_macro_cross_sections(E0)
     else:
         assert URR_Erange is not None
         if np.searchsorted(URR_Erange, E0) == 1:
@@ -60,7 +68,7 @@ def Eigen_function_0D_CE(E0, tally, material, rng,
         tally.first_moment += nu
         tally.second_moment += nu**2
         E_new = 0
-        return
+        return 
     
     else:
         # %sample uniform from E0 to lower ebound
