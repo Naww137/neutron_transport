@@ -74,7 +74,10 @@ def Eigen_function_0D_CE(E0, tally, material, rng,
         E_new = rng.uniform(low=tally.Emin, high=E0)
 
         # % repeat energy transport function
-        E_new = Eigen_function_0D_CE(E_new, tally, material, rng) ;  
+        E_new = Eigen_function_0D_CE(E_new, tally, material, rng, 
+                                                URR_Erange = URR_Erange,
+                                                ptables_list = ptables_list,
+                                                avg_URR = avg_URR) ;  
         
 
     return E_new
