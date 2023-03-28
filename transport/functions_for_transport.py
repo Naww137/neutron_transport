@@ -19,8 +19,8 @@ def sample_xs_from_PTables(ptables_list):
 
 
 def Eigen_function_0D_CE(E0, tally, material, rng, 
-                                                ptables_list = None,
                                                 URR_Erange = None,
+                                                ptables_list = None,
                                                 avg_URR = None):
 
     ### kills neutrons that exit lower energies
@@ -28,17 +28,16 @@ def Eigen_function_0D_CE(E0, tally, material, rng,
         return
     
     ### pull cross sections at E0
-    if ptables_list is None:
-        if avg_URR is None:
-            Sig_t, Sig_f, Sig_g, Sig_s = material.get_macro_cross_sections(E0)
+    if URR_Erange is None:
+        Sig_t, Sig_f, Sig_g, Sig_s = material.get_macro_cross_sections(E0)
+    elif ptables_list is None:
+        assert avg_URR is not None
+        if np.searchsorted(URR_Erange, E0) == 1:
+            [Sig_t, Sig_g, Sig_s, Sig_f ]= avg_URR
         else:
-            assert URR_Erange is not None
-            if np.searchsorted(URR_Erange, E0) == 1:
-                Sig_t, Sig_g, Sig_s, Sig_f = avg_URR
-            else:
-                Sig_t, Sig_f, Sig_g, Sig_s = material.get_macro_cross_sections(E0)
+            Sig_t, Sig_f, Sig_g, Sig_s = material.get_macro_cross_sections(E0)
     else:
-        assert URR_Erange is not None
+        assert avg_URR is None
         if np.searchsorted(URR_Erange, E0) == 1:
             Sig_t, Sig_g, Sig_s, Sig_f = sample_xs_from_PTables(ptables_list)
         else:
@@ -79,6 +78,29 @@ def Eigen_function_0D_CE(E0, tally, material, rng,
         
 
     return E_new
+
+
+
+
+def transport_loop_0D_CE(N, G, tally, mat, rng, URR_Erange, ptables_list, avg_URR):
+        
+    # option to set seed
+    rng = np.random.default_rng()
+    for g in range(int(G)):
+        tally.reset_generation_tally()
+        for iN in range(int(N)):
+            #random fission energy
+            E_start = rng.uniform(low=tally.Emin, high=tally.Emax) 
+            # transport
+            E_new = Eigen_function_0D_CE(E_start, tally, mat, rng,
+                                                            URR_Erange = URR_Erange,
+                                                            ptables_list = ptables_list,
+                                                            avg_URR = avg_URR)
+
+        # save generation tally
+        tally.save_generation_tally(N)
+        
+    return tally
 
 
 
