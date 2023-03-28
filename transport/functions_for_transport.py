@@ -83,9 +83,7 @@ def Eigen_function_0D_CE(E0, tally, material, rng,
 
 
 def transport_loop_0D_CE(N, G, tally, mat, rng, URR_Erange, ptables_list, avg_URR):
-        
-    # option to set seed
-    rng = np.random.default_rng()
+    
     for g in range(int(G)):
         tally.reset_generation_tally()
         for iN in range(int(N)):
