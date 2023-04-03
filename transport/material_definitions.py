@@ -20,14 +20,14 @@ class isotope:
         sig_f = xs.sigma_f(energy, self.pair_constants, self.resonance_ladder)
         sig_t = sig_g+sig_f+sig_s
 
-        return sig_t, sig_f, sig_g, sig_s
+        return sig_t, sig_g, sig_s, sig_f
 
     def get_macro_cross_sections(self, energy):
 
-        sig_t, sig_f, sig_g, sig_s = self.get_micro_cross_sections(energy)
-        Sig_t, Sig_f, Sig_g, Sig_s = self.number_density*np.array([sig_t, sig_f, sig_g, sig_s])
+        sig_t, sig_g, sig_s, sig_f = self.get_micro_cross_sections(energy)
+        Sig_t, Sig_g, Sig_s, Sig_f = self.number_density*np.array([sig_t, sig_g, sig_s, sig_f])
 
-        return Sig_t, Sig_f, Sig_g, Sig_s
+        return Sig_t, Sig_g, Sig_s, Sig_f
     
 
     def get_macro_cross_sections_groupwise(self):
@@ -35,7 +35,7 @@ class isotope:
         Sig_g = 1.4
         Sig_s = 1 
         Sig_t = Sig_f + Sig_g + Sig_s
-        return Sig_t, Sig_f, Sig_g, Sig_s
+        return Sig_t, Sig_g, Sig_s, Sig_f
 
 
 class material:
@@ -51,12 +51,12 @@ class material:
     def get_macro_cross_sections(self, energy):
         m_Sig_f, m_Sig_g, m_Sig_s = 0, 0, 0
         for isotope in self.isotopes:
-            _, i_sig_f, i_sig_g, i_sig_s = isotope.get_micro_cross_sections(energy)
-            i_Sig_f, i_Sig_g, i_Sig_s = isotope.number_density*np.array([i_sig_f, i_sig_g, i_sig_s])
+            _, i_sig_g, i_sig_s, i_sig_f = isotope.get_micro_cross_sections(energy)
+            i_Sig_g, i_Sig_s, i_Sig_f = isotope.number_density*np.array([i_sig_g, i_sig_s, i_sig_f])
             m_Sig_f += i_Sig_f
             m_Sig_g += i_Sig_g
             m_Sig_s += i_Sig_s
         m_Sig_s += self.constant_scattering
         m_Sig_t  = m_Sig_f + m_Sig_g + m_Sig_s
-        return m_Sig_t, m_Sig_f, m_Sig_g, m_Sig_s
+        return m_Sig_t, m_Sig_g, m_Sig_s, m_Sig_f
 

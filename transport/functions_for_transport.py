@@ -29,19 +29,19 @@ def Eigen_function_0D_CE(E0, tally, material, rng,
     
     ### pull cross sections at E0
     if URR_Erange is None:
-        Sig_t, Sig_f, Sig_g, Sig_s = material.get_macro_cross_sections(E0)
+        Sig_t, Sig_g, Sig_s, Sig_f = material.get_macro_cross_sections(E0)
     elif ptables_list is None:
         assert avg_URR is not None
         if np.searchsorted(URR_Erange, E0) == 1:
             [Sig_t, Sig_g, Sig_s, Sig_f ]= avg_URR
         else:
-            Sig_t, Sig_f, Sig_g, Sig_s = material.get_macro_cross_sections(E0)
+            Sig_t, Sig_g, Sig_s, Sig_f = material.get_macro_cross_sections(E0)
     else:
         assert avg_URR is None
         if np.searchsorted(URR_Erange, E0) == 1:
             Sig_t, Sig_g, Sig_s, Sig_f = sample_xs_from_PTables(ptables_list)
         else:
-            Sig_t, Sig_f, Sig_g, Sig_s = material.get_macro_cross_sections(E0)
+            Sig_t, Sig_g, Sig_s, Sig_f = material.get_macro_cross_sections(E0)
 
     
     ### tally in energy
@@ -108,7 +108,7 @@ def transport_loop_0D_CE(N, G, tally, mat, rng, URR_Erange, ptables_list, avg_UR
 
 def Eigen_function_0D(E0, tally, material, rng):
 
-    Sig_t, Sig_f, Sig_g, Sig_s = material.get_macro_cross_sections_groupwise()
+    Sig_t, Sig_g, Sig_s, Sig_f = material.get_macro_cross_sections_groupwise()
 
     # define new E value
     E_new = E0 

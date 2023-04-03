@@ -21,14 +21,14 @@ class material:
         sig_f = xs.sigma_f(energy, self.pair_constants, self.resonance_ladder)
         sig_t = sig_g+sig_f+sig_s
 
-        return sig_t, sig_f, sig_g, sig_s
+        return sig_t, sig_g, sig_s, sig_f
 
     def get_macro_cross_sections(self, energy):
 
-        sig_t, sig_f, sig_g, sig_s = self.get_micro_cross_sections(energy)
-        Sig_t, Sig_f, Sig_g, Sig_s = self.number_density*np.array([sig_t, sig_f, sig_g, sig_s])
+        sig_t, sig_g, sig_s, sig_f = self.get_micro_cross_sections(energy)
+        Sig_t, Sig_g, Sig_s, Sig_f = self.number_density*np.array([sig_t, sig_g, sig_s, sig_f])
 
-        return Sig_t, Sig_f, Sig_g, Sig_s
+        return Sig_t, Sig_g, Sig_s, Sig_f
     
 
 
@@ -38,6 +38,6 @@ class material:
         Sig_g = 1.4
         Sig_s = 1 
         Sig_t = Sig_f + Sig_g + Sig_s
-        return Sig_t, Sig_f, Sig_g, Sig_s
+        return Sig_t, Sig_g, Sig_s, Sig_f
 
 
