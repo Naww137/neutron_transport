@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 IncludeURRcopy.ipynb
+Investigate_URRcopy.ipynb
 *.npy
 # C extensions
 *.so
