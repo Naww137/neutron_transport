@@ -7,6 +7,7 @@ Investigate_URRcopy.ipynb
 *.npy
 # C extensions
 *.so
+.vscode
 
 # Distribution / packaging
 .Python
