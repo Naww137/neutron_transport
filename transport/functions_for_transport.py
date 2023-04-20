@@ -108,7 +108,7 @@ def transport_loop_0D_CE(N, G, tally, mat, rng, URR_Erange, ptables_list, avg_UR
 
 def Eigen_function_0D(E0, tally, material, rng):
 
-    Sig_t, Sig_g, Sig_s, Sig_f = material.get_macro_cross_sections_groupwise()
+    Sig_t, Sig_g, Sig_s, Sig_f = material.get_macro_cross_sections()
 
     # define new E value
     E_new = E0 
@@ -120,12 +120,12 @@ def Eigen_function_0D(E0, tally, material, rng):
         return
     # if fission, add neutrons and exit
     elif reaction <= Sig_g + Sig_f:
-
-        sample_nu = rng.uniform(low=0.0, high=1.0)
-        if sample_nu <=0.6:
-            nu = 2
-        elif sample_nu > 0.6:
-            nu = 3
+        nubar = material.nubar
+        sample_nu = rng.uniform(low=np.floor(nubar), high=np.ceil(nubar))
+        if sample_nu <= nubar:
+            nu = np.ceil(nubar)
+        else: # if sample_nu > nubar:
+            nu = np.floor(nubar)  
             
         tally.first_moment += nu
         tally.second_moment += nu**2
@@ -135,3 +135,19 @@ def Eigen_function_0D(E0, tally, material, rng):
         E_new = Eigen_function_0D(E_new, tally, material, rng)
 
     return E_new
+
+
+def transport_loop_0D_MG(N, G, tally, mat, rng):
+
+    for g in range(int(G)):
+        tally.reset_generation_tally()
+        for iN in range(int(N)):
+            #random fission energy
+            E_start = rng.uniform(low=tally.Emin, high=tally.Emax) 
+            # transport
+            E_new = Eigen_function_0D(E_start, tally, mat, rng)
+
+        # save generation tally
+        tally.save_generation_tally(N)
+
+    return tally

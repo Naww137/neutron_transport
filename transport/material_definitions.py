@@ -60,3 +60,19 @@ class material:
         m_Sig_t  = m_Sig_f + m_Sig_g + m_Sig_s
         return m_Sig_t, m_Sig_g, m_Sig_s, m_Sig_f
 
+
+class material_MG:
+
+    def __init__(self, nubar, Sig_f, Sig_g, Sig_s):
+
+        self.nubar = nubar
+        self.Sig_f = Sig_f
+        self.Sig_g = Sig_g
+        self.Sig_s = Sig_s
+        self.Sig_t = self.Sig_f + self.Sig_g + self.Sig_s
+
+        return
+    
+    def get_macro_cross_sections(self):
+
+        return self.Sig_t, self.Sig_g, self.Sig_s, self.Sig_f

@@ -32,12 +32,19 @@ class material:
     
 
 
+class material_MG:
+
+    def __init__(self, Sig_f, Sig_g, Sig_s):
+
+        self.Sig_f = Sig_f
+        self.Sig_g = Sig_g
+        self.Sig_s = Sig_s
+        self.Sig_t = self.Sig_f + self.Sig_g + self.Sig_s
+
+        return
     
     def get_macro_cross_sections_groupwise(self):
-        Sig_f = 1 
-        Sig_g = 1.4
-        Sig_s = 1 
-        Sig_t = Sig_f + Sig_g + Sig_s
-        return Sig_t, Sig_g, Sig_s, Sig_f
+
+        return self.Sig_t, self.Sig_g, self.Sig_s, self.Sig_f
 
 
