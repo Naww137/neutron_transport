@@ -6,12 +6,17 @@ import numpy as np
 class tallies:
 
     def __init__(self, 
-                Emin=None, Emax=None, iEbins=None):
+                Emin=None, Emax=None, iEbins=None,
+                Xmin=None, Xmax=None, iXbins=None):
 
         ### setup energy bins
         if iEbins is not None:
             self.setup_Ebins(Emin, Emax, iEbins)
-            self.collision_rate_tally = []
+            # self.collision_rate_tally = []
+
+        ### setup spatial bins
+        if iXbins is not None:
+            self.setup_Xbins(Xmin,Xmax, iXbins)
             
         ### init runtime variables
         self.simulated_neutrons = 0
@@ -38,6 +43,31 @@ class tallies:
         self.Etally = np.zeros((2,len(Ebins))) # tally container
         return
     
+    def setup_Xbins(self, Xmin, Xmax, iXbins):
+        vXbins = np.linspace(Xmin,Xmax,iXbins+1) #edges
+        dXbins = np.zeros(len(vXbins)-1)
+        Xbins = np.zeros(len(vXbins)-1) # midpoints
+        for i in range(1,len(vXbins)):
+            dXbins[i-1] = vXbins[i] - vXbins[i-1] 
+            Xbins[i-1] = (vXbins[i]+vXbins[i-1])/2 
+        self.Xmin = Xmin
+        self.Xmax = Xmax
+        self.iXbins = iXbins
+        self.vXbins = vXbins
+        self.dXbins = dXbins
+        self.Xbins = Xbins # midpoints
+        self.Xtally = np.zeros((2,len(Xbins))) # tally container
+
+        self.MCsource = np.zeros((2,len(Xbins)))
+        self.FMsource = np.zeros((2,len(Xbins)))
+        return
+    
+
+    def tally_source(self, source_particle_location):
+        bindex = np.searchsorted(self.vXbins, source_particle_location)-1
+        
+        return
+
     # def setup_ktally(self, Emin, Emax):
     #     self.intragen_ktally = np.zeros((2,1))
     #     return
